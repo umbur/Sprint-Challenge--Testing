@@ -40,4 +40,48 @@ describe('tests for GET and POST server endpoints', () => {
             expect(Array.isArray(response.body)).toBe(true)
         })
     })
-})
+
+    describe('POST /games endpoint tests', () => {
+        it('should return a 422 code if the object being sent is incomplete', async () => {
+            const newGame = {
+                title: 'Sonic',
+                releaseYear: 1991
+            }
+            const response = await request(server).post('/games').send(newGame)
+
+            expect(response.status).toBe(422)
+        })
+        it('should return status 201 if the object has required fields', async () => {
+            const newGame = {
+                title: 'Sonic',
+                genre: 'Platform',
+                releaseYear: 1991
+            }
+            const response = await request(server).post('/games').send(newGame)
+
+            expect(response.status).toBe(201)
+        })
+        it('should  return JSON', async () => {
+            const newGame = {
+                title: 'Sonic',
+                genre: 'Platform',
+                releaseYear: 1991
+            }
+
+            const response = await request(server).post('/games').send(newGame)
+
+            expect(response.type).toBe('application/json')
+        })
+        it('should return a message with the game title indicating the post was successful', async () => {
+            const newGame = {
+                title: 'Sonic',
+                genre: 'Platform',
+                releaseYear: 1991
+            }
+
+            const response = await request(server).post('/games').send(newGame)
+
+            expect(response.body).toEqual({ message: 'Sonic added to games database.' })
+        })
+    })
+}) 
